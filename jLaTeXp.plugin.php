@@ -15,23 +15,11 @@ class latex_paragraph extends Plugin		// Extends the core Plugin class
 	{
 		return array
 		(
-			//Make this happen after the excerpt filter so images don't get stripped
+			//Make these happen late
 			'filter_post_content_excerpt' => 14,
-			//And push these back for good measure
 			'filter_post_content_out' => 14,
 			'filter_comment_content_out' => 14,
 		);
-	}
-	
-	
-	public function callback_newparagraph( $match )
-	{
-		return "</p><p>" . substr( $match[0], -1 );
-	}
-	
-	public function callback_newline( $match )
-	{
-		return "<br />" . substr( $match[0], -1 );
 	}
 	
 	/**
@@ -46,13 +34,13 @@ class latex_paragraph extends Plugin		// Extends the core Plugin class
 			$content = "<p>" . $content . "</p>";
 		}
 		
-		//XXX: \n\n[tex] is a problem.
-		//$content = preg_replace_callback ( "/(\n\r|\n){2,}[^<]/si", array( $this, 'callback_newparagraph' ), $content );
-		//$content = preg_replace_callback ( "/(\n\r|\n)[^<]/si", array( $this, 'callback_newline' ), $content );
-		//$content = preg_replace ( "/(\n\r|\n){2,}/si", "</p><p>", $content );
-		$content = preg_replace_callback ( "/(\n\r|\n){2,}/si", array( $this, 'callback_newparagraph' ), $content );
+		//at least two returns
+		$content = preg_replace ( "/(\n\r|\n){2,}/si", "</p><p>", $content );
+		//only one returns
 		$content = preg_replace ( "/(\n\r|\n)/si", "<br />", $content );
+		//\newline
 		$content = preg_replace ( "/\\\\newline/si", "<br />", $content );
+		//\\
 		$content = preg_replace ( "/\\\\{2}/si", "<br />", $content );
 
 		return $content;
@@ -79,6 +67,17 @@ class latex_paragraph extends Plugin		// Extends the core Plugin class
 	{
 		//why reinvent the wheel?
 		return $this->filter_post_content_out( $content, null );		
+	}
+	
+
+	/*
+	 * function action_init_theme
+	 * Called when the theme is initialized
+	 */
+	public function action_init_theme()
+	{
+		//Add the stylesheet
+		Stack::add('template_stylesheet', array( URL::get_from_filesystem(__FILE__) . '/formatting.css', 'screen', 'screen' ), 'jLaTeXp-css');
 	}
 	
 	
