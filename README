@@ -2,6 +2,6 @@ jLaTeXp
 A plugin for Habari (http://www.habariproject.org) which forces LaTeX style paragraphs and newlines.  (one return, \\, \newline = new line; two returns = new paragraph)
 
 To install:
-	(1) Drop the plugin files into user/plugins/latexparagraph/
+	(1) Drop the plugin files into user/plugins/jLaTeXp/
 	(2) Activate the plugin in the Habari admin 
 	(3) Enjoy!
